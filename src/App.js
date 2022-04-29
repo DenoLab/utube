@@ -14,6 +14,10 @@ const VideoPlayed = styled.div`
     width: 50%;
     height: 400px;
 `;
+
+const Playlist = styled.div`
+`;
+
 const SearchResult = styled.div`
 // display: flex;
 // justify-content: center;
@@ -46,12 +50,15 @@ function App() {
     const [result, setResult] = useState('');
     // const [result, setResult] = useState({items:[]});
     const [loading, setLoading] = useState(false);
+    const [lists, setLists] = useState('');
     const [video,setVideo] = useState('https://www.youtube.com/embed/1So7VBehCQg');
     const [input, setInput] = useState("Search here");
-    const watchVideo = "https://www.youtube.com/watch?v=";
 
     const ApiKey ="&key=AIzaSyALkh3jg2EAfRx8hRGehrCZSyYmbO9zlpo";
-    const UtubeLink = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchKey}&maxResults=25${ApiKey}`
+    const ApiKey2 ="AIzaSyA-O0PnAoDduuz490vJ286BDvDLKt08fHE";
+    const ApiKey3 = "AIzaSyAYrj_BQjiJwfo7JSR_eRMSbPAtX4Q57tE";
+    const ApiKeyF = "AIzaSyCCk2nryBsrNgvp-Nhtel3Fh-nFpW4XDrE";
+    const UtubeLink = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${searchKey}&maxResults=50${ApiKey}`
     
     const getInput = (e) => {
         const input = e.target.value;
@@ -65,8 +72,9 @@ function App() {
         }
     }
    
-    const playVideo = (e) => {
-        const linkVideo = e.target.value;
+    const playVideo = (item) => {
+        const linkVideo = "https://www.youtube.com/embed/"+item.id.videoId;
+        console.log(linkVideo);
         setVideo(linkVideo);
     }
 
@@ -81,6 +89,15 @@ function App() {
         })
     },[UtubeLink]);
 
+    
+    const addPlayList = (e) => {
+        const item = e.target.value;
+        console.log(item);
+        const newList = [...lists, item];
+        setLists(newList);
+    }
+    console.log(lists);
+    
     return (
         <div className="App">
             <Header>
@@ -89,21 +106,35 @@ function App() {
             </Header>
             {searchKey && (<h1>Results for keyword "{searchKey}"</h1>)}
             {/* {result && <iframe className="player" type="text/html" width="800px" height="600px" src={"https://www.youtube.com/embed/"+result.items[0].id.videoId} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen/>} */}
+            <>
             <VideoPlayed>
-                {result && <iframe className="player" type="text/html" width="100%" height="100%" src={video} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen/>}
+                {result && <iframe className="player" type="text/html" width="100%" height="100%" src={video} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen/>}
             </VideoPlayed>
-            
-            <SearchResult>
-            {loading && (<div>Loading...</div>)}
-            {result && (
-            <Items>
-                {result.items.map(item => (
+            <Playlist>
+                {/* {lists.map(item => (
+                    <Items>
                     <button value={"https://www.youtube.com/embed/" + item.id.videoId} type="button" onClick={playVideo} key={item.id.videoId} >
                         <img src={item.snippet.thumbnails.default.url}/>
                         <p>{item.snippet.title}</p>
                     </button>
+                    </Items>
+                ))} */}
+            </Playlist>
+            </>
+            <SearchResult>
+            {loading && (<div>Loading...</div>)}
+            {result && (
+            <>
+                {result.items.map(item => (
+                    <Items>
+                    <button value={item} type="button" onClick={() => playVideo(item)} key={item.id.videoId} >
+                        <img src={item.snippet.thumbnails.default.url}/>
+                        <p>{item.snippet.title}</p>
+                    </button>
+                    <button value={item} type="button" style={{border: "solid 1px green", width:"20%"}} onClick={addPlayList}>Add to playlist</button>
+                    </Items>
                 ))}
-            </Items>
+            </>
             )}
             </SearchResult>
         </div>

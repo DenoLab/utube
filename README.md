@@ -1,3 +1,5 @@
+Note:
+This app using Youtube API, so you should change ApiKey with your API keycd  
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
